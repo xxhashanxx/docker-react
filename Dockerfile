@@ -1,25 +1,16 @@
-FROM node:10-alpine as build-stage
+FROM node:alpine as builder
 
-WORKDIR /app
+WORKDIR '/app'
 
-COPY package*.json /app/
+COPY package*.json ./
 
 RUN npm install
 
-COPY ./ /app/
-
+COPY . .
 RUN npm run build
 
-FROM nginx:1.13.12-alpine
-
-## Copy our default nginx config
-COPY nginx/default.conf /etc/nginx/conf.d/
-
-## Remove default nginx website
-RUN rm -rf /usr/share/nginx/html/*
+FROM nginx
 EXPOSE 80
-COPY --from=build-stage /app/build/ /usr/share/nginx/html
-
-CMD ["nginx", "-g", "daemon off;" ]
+COPY --from=builder /app/build/ /usr/share/nginx/html
 
 
