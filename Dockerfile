@@ -17,7 +17,7 @@ COPY nginx/default.conf /etc/nginx/conf.d/
 
 ## Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
-
+EXPOSE 80
 COPY --from=build-stage /app/build/ /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;" ]
